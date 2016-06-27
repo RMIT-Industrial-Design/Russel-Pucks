@@ -28,10 +28,6 @@
 
 #include "SimbleeCOM.h"
 
-// the intended target - this is not needed
-// this number can be big (<4,294,967,295) so use an unsigned long
-// unsigned long destESN = 0xfaf7e51b;
-
 // define an object type to hold the data being sent
 struct payloadStructure {
   int16_t val;
