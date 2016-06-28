@@ -1,7 +1,7 @@
 /*
   Russel Controller
   by Alexander Radevski
-  Scott Mitchell
+  and Scott Mitchell
   RMIT University
 
   Started 10/06/16
@@ -39,7 +39,7 @@ payloadStructure payload;
 // for debugging purposes
 boolean DEBUG = true;
 
-// declare pin variables
+// declare pin constants
 const int potPin = 3;
 const int motorPin = 5;
 const int ledPinB = 9;
@@ -47,12 +47,14 @@ const int ledPinG = 11;
 const int ledPinR = 12;
 const int ledPinBlue = 15;
 const int voltPin = 6;
+
 // set low and medium battery threshold
 const int thresholdLow = 170;
 const int thresholdMed = 220;
-
-// unsigned long motorStart = 0;
-// unsigned long timeout = 5000;
+// set LED flash interval (to save power)
+unsigned long battCheckStart = 0;
+unsigned long battCheckInterval = 2000;
+unsigned long battLEDtimeout = 500;
 
 
 void setup() {
@@ -96,32 +98,46 @@ void loop() {
   delay(100);
   digitalWrite(ledPinBlue, LOW);
 
+  if (DEBUG) Serial.print(payload.val);
+
   // check the battery voltage
-  int voltValue = analogRead(voltPin);
-  int mapValue = map(voltValue, 0, 1023, 0, 330);
-  // adjust battery indicator
-  if (mapValue < thresholdLow) {
-    // turn LED red
-    digitalWrite(ledPinR, HIGH);
-    digitalWrite(ledPinG, LOW);
-  } else if (mapValue < thresholdMed) {
-    // turn LED yellow
-    digitalWrite(ledPinR, HIGH);
-    digitalWrite(ledPinG, HIGH);
-  } else {
-    // turn LED green
-    digitalWrite(ledPinR, LOW);
-    digitalWrite(ledPinG, HIGH);
+  if (millis() - battCheckStart > battCheckInterval) {
+    int voltValue = analogRead(voltPin);
+    int mapValue = map(voltValue, 0, 1023, 0, 330);
+    // adjust battery indicator
+    if (mapValue < thresholdLow) {
+      // turn LED red
+      digitalWrite(ledPinR, HIGH);
+      digitalWrite(ledPinG, LOW);
+    } else if (mapValue < thresholdMed) {
+      // turn LED yellow
+      digitalWrite(ledPinR, HIGH);
+      digitalWrite(ledPinG, HIGH);
+    } else {
+      // turn LED green
+      digitalWrite(ledPinR, LOW);
+      digitalWrite(ledPinG, HIGH);
+    }
+    battCheckStart = millis();
+
+    if (DEBUG) Serial.print("    ");
+    if (DEBUG) Serial.print(voltValue);
+    if (DEBUG) Serial.print("    ");
+    if (DEBUG) Serial.print(mapValue);
   }
 
-  // for debuggning
-  if (DEBUG) Serial.print(voltValue);
-  if (DEBUG) Serial.print("    ");
-  if (DEBUG) Serial.print(mapValue);
-  if (DEBUG) Serial.print("    ");
-  if (DEBUG) Serial.println(payload.val);
-  
-  delay(50);
+  // check battery LED
+  if (millis() - battCheckStart > battLEDtimeout) {
+    // turn LED off
+    digitalWrite(ledPinR, LOW);
+    digitalWrite(ledPinG, LOW);
+  }
+
+  if (DEBUG) Serial.println("");
+
+  // Ultra Low Power Delay in milliseconds - does this work?
+  // Simblee_ULPDelay(200);
+  delay(200);
 }
 
 
