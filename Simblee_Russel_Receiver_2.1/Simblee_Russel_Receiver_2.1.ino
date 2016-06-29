@@ -29,9 +29,9 @@
 #include "SimbleeCOM.h"
 
 // this puck
-unsigned int thisPuck = 1;
+unsigned int thisPuck = 4;
 // the controller
-unsigned long controlESN = 0xF8F31897;
+unsigned long controlESN = 0x74897d03;
 // the master
 unsigned long masterESN = 0x281a72e9;
 // all pucks
@@ -63,14 +63,14 @@ const int thresholdLow = 170;
 const int thresholdMed = 220;
 // set LED flash interval (to save power)
 unsigned long battCheckStart = 0;
-unsigned long battCheckInterval = 2000;
-unsigned long battLEDtimeout = 500;
+unsigned long battCheckInterval = 5000;
+unsigned long battLEDtimeout = 1000;
 
 int motorValue = 0;
 unsigned long motorStart = 0;
 unsigned long motorTimeout = 5000;
-// set by master controller
-boolean puckActive = false;
+// set by master controller. default value is false
+boolean puckActive = true;
 
 
 void setup() {
