@@ -67,7 +67,7 @@ const int thresholdLow = 170;
 const int thresholdMed = 220;
 // set LED flash interval (to save power)
 unsigned long battCheckStart = 0;
-unsigned long battCheckInterval = 5000;
+unsigned long battCheckInterval = 6000;
 unsigned long battLEDtimeout = 1000;
 
 int motorValue = 0;

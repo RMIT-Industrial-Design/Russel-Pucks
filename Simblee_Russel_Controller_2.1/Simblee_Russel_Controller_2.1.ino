@@ -53,7 +53,7 @@ const int thresholdLow = 170;
 const int thresholdMed = 220;
 // set LED flash interval (to save power)
 unsigned long battCheckStart = 0;
-unsigned long battCheckInterval = 5000;
+unsigned long battCheckInterval = 6000;
 unsigned long battLEDtimeout = 1000;
 
 
@@ -82,11 +82,16 @@ void setup() {
 }
 
 void loop() {
+  // default values. motor off, long sleep
   int motorValue = 0;
+  int sleepTime = 3000;
   // read pot value
   int potValue = analogRead(potPin);
   // add a buffer to the off position and convert pot value into motor value
-  if (potValue > 10) motorValue = map(potValue, 10, 1023, 0, 255);
+  if (potValue > 10) {
+    motorValue = map(potValue, 10, 1023, 0, 255);
+    sleepTime = 200;
+  }
   // activate motor
   analogWrite(motorPin, motorValue);
 
@@ -136,7 +141,7 @@ void loop() {
   if (DEBUG) Serial.println("");
 
   // Ultra Low Power Delay in milliseconds - does this work?
-  Simblee_ULPDelay(200);
+  Simblee_ULPDelay(sleepTime);
 }
 
 
