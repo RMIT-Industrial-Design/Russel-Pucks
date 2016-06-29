@@ -55,6 +55,7 @@ unsigned long battCheckStart = 0;
 unsigned long battCheckInterval = 2000;
 unsigned long battLEDtimeout = 500;
 
+
 void setup() {
   // setup serial communication
   if (DEBUG) Serial.begin(9600);
@@ -74,56 +75,61 @@ void setup() {
 }
 
 void loop() {
+  // system state
+  boolean systemOn = true;
   // read switch value
   int switchValue = analogRead(switchPin);
   // asign payload value based on switch position
   // switch is connected to an array of 12 equal resistors
-  if (switchValue < 53) payload.val = 0; // all off
-  else if (switchValue < 146) payload.val = 1;
-  else if (switchValue < 239) payload.val = 2;
-  else if (switchValue < 332) payload.val = 3;
-  else if (switchValue < 425) payload.val = 4;
-  else if (switchValue < 518) payload.val = 5;
-  else if (switchValue < 611) payload.val = 6;
-  else if (switchValue < 704) payload.val = 7;
-  else if (switchValue < 797) payload.val = 8;
-  else if (switchValue < 890) payload.val = 9;
-  else if (switchValue < 983) payload.val = 10;
-  else payload.val = 999; // all on
-  // send the payload
-  SimbleeCOM.send((char*)&payload, sizeof(payload));
-  digitalWrite(ledPinR, LOW);
-  digitalWrite(ledPinG, LOW);
-  digitalWrite(ledPinB, HIGH);
-  delay(100);
-  digitalWrite(ledPinB, LOW);
+  if (switchValue < 53) systemOn = false; // master off
+  else if (switchValue < 146) payload.val = 0; // all controllers off
+  else if (switchValue < 239) payload.val = 1;
+  else if (switchValue < 332) payload.val = 2;
+  else if (switchValue < 425) payload.val = 3;
+  else if (switchValue < 518) payload.val = 4;
+  else if (switchValue < 611) payload.val = 5;
+  else if (switchValue < 704) payload.val = 6;
+  else if (switchValue < 797) payload.val = 7;
+  else if (switchValue < 890) payload.val = 8;
+  else if (switchValue < 983) payload.val = 9;
+  else payload.val = 999; // all controllers on
 
-  if (DEBUG) Serial.print(payload.val);
+  if (systemOn) {
+    // send the payload
+    SimbleeCOM.send((char*)&payload, sizeof(payload));
+    digitalWrite(ledPinR, LOW);
+    digitalWrite(ledPinG, LOW);
+    digitalWrite(ledPinB, HIGH);
+    delay(100);
+    digitalWrite(ledPinB, LOW);
 
-  // check the battery voltage
-  if (millis() - battCheckStart > battCheckInterval) {
-    int voltValue = analogRead(VoltPin);
-    int mapValue = map(voltValue, 0, 1023, 0, 330);
-    // adjust battery indicator
-    if (mapValue < thresholdLow) {
-      // turn LED red
-      digitalWrite(ledPinR, HIGH);
-      digitalWrite(ledPinG, LOW);
-    } else if (mapValue < thresholdMed) {
-      // turn LED yellow
-      digitalWrite(ledPinR, HIGH);
-      digitalWrite(ledPinG, HIGH);
-    } else {
-      // turn LED green
-      digitalWrite(ledPinR, LOW);
-      digitalWrite(ledPinG, HIGH);
+    if (DEBUG) Serial.print(payload.val);
+
+    // check the battery voltage
+    if (millis() - battCheckStart > battCheckInterval) {
+      int voltValue = analogRead(VoltPin);
+      int mapValue = map(voltValue, 0, 1023, 0, 330);
+      // adjust battery indicator
+      if (mapValue < thresholdLow) {
+        // turn LED red
+        digitalWrite(ledPinR, HIGH);
+        digitalWrite(ledPinG, LOW);
+      } else if (mapValue < thresholdMed) {
+        // turn LED yellow
+        digitalWrite(ledPinR, HIGH);
+        digitalWrite(ledPinG, HIGH);
+      } else {
+        // turn LED green
+        digitalWrite(ledPinR, LOW);
+        digitalWrite(ledPinG, HIGH);
+      }
+      battCheckStart = millis();
+
+      if (DEBUG) Serial.print("    ");
+      if (DEBUG) Serial.print(voltValue);
+      if (DEBUG) Serial.print("    ");
+      if (DEBUG) Serial.print(mapValue);
     }
-    battCheckStart = millis();
-
-    if (DEBUG) Serial.print("    ");
-    if (DEBUG) Serial.print(voltValue);
-    if (DEBUG) Serial.print("    ");
-    if (DEBUG) Serial.print(mapValue);
   }
 
   // check battery LED
@@ -136,7 +142,7 @@ void loop() {
   if (DEBUG) Serial.println("");
 
   // Ultra Low Power Delay in milliseconds - does this work?
-  // Simblee_ULPDelay(200);
-  delay(200);
+  if (systemOn) Simblee_ULPDelay(200);
+  else Simblee_ULPDelay(1000);
 }
 

@@ -136,8 +136,7 @@ void loop() {
   if (DEBUG) Serial.println("");
 
   // Ultra Low Power Delay in milliseconds - does this work?
-  // Simblee_ULPDelay(200);
-  delay(200);
+  Simblee_ULPDelay(200);
 }
 
 
