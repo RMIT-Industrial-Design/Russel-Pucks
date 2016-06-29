@@ -29,11 +29,15 @@
 #include "SimbleeCOM.h"
 
 // this puck
-unsigned int thisPuck = 4;
+byte thisPuck = 4;
+// the controllers
+unsigned long theControllers[7] = {0x281a72e9, 0x17df311c, 0x0bc72a0f,
+                                   0xf8f31897, 0x74897d03, 0x15a5f092, 0x086da632
+                                  };
 // the controller
-unsigned long controlESN = 0x74897d03;
+unsigned long controlESN;
 // the master
-unsigned long masterESN = 0x281a72e9;
+unsigned long masterESN;
 // all pucks
 unsigned int allPucks = 999;
 
@@ -56,7 +60,7 @@ const int ledPinR = 12;
 const int ledPinBlue = 15;
 const int VoltPin = 6;
 unsigned long blueLEDStart = 0;
-unsigned long blueLEDtimeout = 500;
+unsigned long blueLEDtimeout = 200;
 
 // set low and medium battery threshold
 const int thresholdLow = 170;
@@ -91,6 +95,10 @@ void setup() {
   pinMode(motorPin, OUTPUT);
   // turn motor off
   digitalWrite(motorPin, LOW);
+
+  // define ESN numbers
+  controlESN = theControllers[thisPuck];
+  masterESN = theControllers[0];
 
   // setup Simblee
   SimbleeCOM.mode = LONG_RANGE;
