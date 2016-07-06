@@ -74,7 +74,7 @@ int motorValue = 0;
 unsigned long motorStart = 0;
 unsigned long motorTimeout = 5000;
 // set by master controller. default value is false
-boolean puckActive = true;
+boolean puckActive = false;
 
 
 void setup() {
@@ -152,7 +152,6 @@ void loop() {
   if (DEBUG) Serial.println("");
 
   // Ultra Low Power Delay in milliseconds - this does not work
-  // Simblee_ULPDelay(INFINITE) - no bluetooth interupt
   // Simblee_ULPDelay(100);
   delay(100);
 }

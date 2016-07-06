@@ -84,7 +84,7 @@ void setup() {
 void loop() {
   // default values. motor off, long sleep
   int motorValue = 0;
-  int sleepTime = 3000;
+  int sleepTime = 1000;
   // read pot value
   int potValue = analogRead(potPin);
   // add a buffer to the off position and convert pot value into motor value

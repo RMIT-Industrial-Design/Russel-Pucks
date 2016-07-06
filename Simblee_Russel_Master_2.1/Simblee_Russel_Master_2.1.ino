@@ -79,6 +79,9 @@ void loop() {
   boolean systemOn = true;
   // read switch value
   int switchValue = analogRead(switchPin);
+  if (DEBUG) Serial.print("switch read: ");
+  if (DEBUG) Serial.print(switchValue);
+  
   // asign payload value based on switch position
   // switch is connected to an array of 12 equal resistors
   if (switchValue < 53) payload.val = 0; // master off
@@ -102,6 +105,7 @@ void loop() {
   delay(100);
   digitalWrite(ledPinB, LOW);
 
+  if (DEBUG) Serial.print("  payload: ");
   if (DEBUG) Serial.print(payload.val);
 
   // check the battery voltage
@@ -124,9 +128,9 @@ void loop() {
     }
     battCheckStart = millis();
 
-    if (DEBUG) Serial.print("    ");
+    if (DEBUG) Serial.print(" analog read: ");
     if (DEBUG) Serial.print(voltValue);
-    if (DEBUG) Serial.print("    ");
+    if (DEBUG) Serial.print(" volts x 10: ");
     if (DEBUG) Serial.print(mapValue);
   }
 
