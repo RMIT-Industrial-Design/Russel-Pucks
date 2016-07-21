@@ -84,18 +84,18 @@ void loop() {
   
   // asign payload value based on switch position
   // switch is connected to an array of 12 equal resistors
-  if (switchValue < 53) payload.val = 0; // master off
-  else if (switchValue < 146) payload.val = 0; // all controllers off
-  else if (switchValue < 239) payload.val = 1;
-  else if (switchValue < 332) payload.val = 2;
-  else if (switchValue < 425) payload.val = 3;
-  else if (switchValue < 518) payload.val = 4;
-  else if (switchValue < 611) payload.val = 5;
-  else if (switchValue < 704) payload.val = 6;
-  else if (switchValue < 797) payload.val = 7;
-  else if (switchValue < 890) payload.val = 8;
-  else if (switchValue < 983) payload.val = 9;
-  else payload.val = 999; // all controllers on
+  if (switchValue < 53) payload.val = 999; // master off
+  else if (switchValue < 146) payload.val = 9; // all controllers off
+  else if (switchValue < 239) payload.val = 8;
+  else if (switchValue < 332) payload.val = 7;
+  else if (switchValue < 425) payload.val = 6; //yellow puck on
+  else if (switchValue < 518) payload.val = 5; //orange puck on
+  else if (switchValue < 611) payload.val = 2; //dark blue puck on
+  else if (switchValue < 704) payload.val = 3; //red puck on
+  else if (switchValue < 797) payload.val = 4; //light blue puck on
+  else if (switchValue < 890) payload.val = 1; // green puck on
+  else if (switchValue < 983) payload.val = 0;
+  else payload.val = 0; // all controllers on
 
   // send the payload
   SimbleeCOM.send((char*)&payload, sizeof(payload));
