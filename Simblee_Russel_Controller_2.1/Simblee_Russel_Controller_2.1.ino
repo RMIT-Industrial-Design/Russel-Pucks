@@ -88,12 +88,18 @@ void loop() {
   // read pot value
   int potValue = analogRead(potPin);
   // add a buffer to the off position and convert pot value into motor value
-  if (potValue > 10) {
-    motorValue = map(potValue, 10, 1023, 0, 255);
+  if (potValue > 40) {
+    motorValue = map(potValue, 40, 880, 0, 255);
+    motorValue = constrain(motorValue, 0, 255);
     sleepTime = 200;
   }
   // activate motor
   analogWrite(motorPin, motorValue);
+
+    if (DEBUG) Serial.print("pot val: ");
+    if (DEBUG) Serial.print(potValue);
+    if (DEBUG) Serial.print(" motor val: ");
+    if (DEBUG) Serial.print(motorValue);
 
   // load the motor value into payload
   payload.val = motorValue;
@@ -103,6 +109,7 @@ void loop() {
   delay(100);
   digitalWrite(ledPinBlue, LOW);
 
+  if (DEBUG) Serial.print(" payload val: ");
   if (DEBUG) Serial.print(payload.val);
 
   // check the battery voltage
